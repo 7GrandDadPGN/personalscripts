@@ -1,0 +1,1 @@
+Change fakeplr to the player you want to be, Change otherfakeplayers to the player that you want others to be.
