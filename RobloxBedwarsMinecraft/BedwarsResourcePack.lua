@@ -4,13 +4,31 @@ repeat wait() until game.ReplicatedStorage.Items ~= nil
 repeat wait() until game.Workspace ~= nil 
 repeat wait() until game.Workspace:FindFirstChild("Map") ~= nil
 local getasset = getsynasset or getcustomasset
+local sounds = require(game.ReplicatedStorage.TS.sound["sound-manager"]).SoundManager.soundConfigs
+for i,v in pairs(listfiles("bedwars/sounds")) do
+    local str = tostring(tostring(v):gsub('bedwars/sounds\\', ""):gsub(".mp3", ""))
+    local item = sounds[tonumber(str)]
+    if item then
+        item.assetId = getasset(v)
+    end
+end 
 for i,v in pairs(listfiles("bedwars")) do
     local str = tostring(tostring(v):gsub('bedwars\\', ""):gsub(".png", ""))
     local item = game.ReplicatedStorage.Items:FindFirstChild(str)
     if item then
-        for i2,v2 in pairs(item:GetDescendants()) do
-            if v2:IsA("Texture") then
-                v2.Texture = getasset(v)
+        if isfile("bedwars/models/"..str..".mesh") then
+            item.Handle.MeshId = getasset("bedwars/models/"..str..".mesh")
+            item.Handle.TextureID = getasset("bedwars/models/"..str..".png")
+            for i2,v2 in pairs(item.Handle:GetDescendants()) do
+                if v2:IsA("MeshPart") then
+                    v2.Transparency = 1
+                end
+            end
+        else
+            for i2,v2 in pairs(item:GetDescendants()) do
+                if v2:IsA("Texture") then
+                    v2.Texture = getasset(v)
+                end
             end
         end
     end
@@ -48,8 +66,8 @@ for i,v in pairs(game.Workspace.Map.Blocks:GetChildren()) do
         end
     end
 end
-game.Workspace.Map.Blocks.ChildAdded:connect(function(v)
-    if isfile("bedwars/"..v.Name..".png") then
+game.Workspace.DescendantAdded:connect(function(v)
+    if v.Parent == game.Workspace.Map.Blocks and isfile("bedwars/"..v.Name..".png") then
         for i2,v2 in pairs(v:GetDescendants()) do
             if v2:IsA("Texture") then
                 v2.Texture = getasset("bedwars/"..v.Name..".png")
@@ -58,6 +76,18 @@ game.Workspace.Map.Blocks.ChildAdded:connect(function(v)
         v.DescendantAdded:connect(function(v3)
             if v3:IsA("Texture") then
                 v3.Texture = getasset("bedwars/"..v.Name..".png")
+            end
+        end)
+    end
+    if v:IsA("Accessory") and isfile("bedwars/models/"..v.Name..".mesh") then
+        spawn(function()
+            local handle = v:WaitForChild("Handle")
+            handle.MeshId = getasset("bedwars/models/"..v.Name..".mesh")
+            handle.TextureID = getasset("bedwars/models/"..v.Name..".png")
+            for i2,v2 in pairs(handle:GetDescendants()) do
+                if v2:IsA("MeshPart") then
+                    v2.Transparency = 1
+                end
             end
         end)
     end
