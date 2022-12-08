@@ -36,7 +36,7 @@ local function getcustomassetfunc(path)
 		textlabel.Font = Enum.Font.SourceSans
 		textlabel.TextColor3 = Color3.new(1, 1, 1)
 		textlabel.Position = UDim2.new(0, 0, 0, -36)
-		textlabel.Parent = game.CoreGui.RobloxGui
+		textlabel.Parent = game:GetService("CoreGui").RobloxGui
 		repeat task.wait() until isfile(path)
 		textlabel:Remove()
 	end)
