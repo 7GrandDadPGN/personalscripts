@@ -1,4 +1,4 @@
-repeat wait() until game:IsLoaded() == true
+ if not game:IsLoaded() then repeat task.wait() until game:IsLoaded() end
 --repeat wait() until game.ReplicatedStorage ~= nil
 --repeat wait() until game.ReplicatedStorage.Items ~= nil
 --repeat wait() until game.Workspace ~= nil 
@@ -24,36 +24,33 @@ local function removeTags(str)
     return (str:gsub("<[^<>]->", ""))
 end
 
-
 local function getcustomassetfunc(path)
-	if not isfile(path) then
-		spawn(function()
-            setthreadidentity(7)
-			local textlabel = Instance.new("TextLabel")
-			textlabel.Size = UDim2.new(1, 0, 0, 36)
-			textlabel.Text = "Downloading "..path
-			textlabel.BackgroundTransparency = 1
-			textlabel.TextStrokeTransparency = 0
-			textlabel.TextSize = 30
-			textlabel.Font = Enum.Font.SourceSans
-			textlabel.TextColor3 = Color3.new(1, 1, 1)
-			textlabel.Position = UDim2.new(0, 0, 0, -36)
-			textlabel.Parent = game.CoreGui.RobloxGui
-			repeat wait() until isfile(path)
-			textlabel:Remove()
-            setthreadidentity(2)
-		end)
-		local req = requestfunc({
-			Url = "https://raw.githubusercontent.com/7GrandDadPGN/personalscripts/main/RobloxBedwarsMinecraft/"..path,
-			Method = "GET"
-		})
-		writefile(path, req.Body)
-	end
+     if not isfile(path) then
+	task.spawn(function()
+		local textlabel = Instance.new("TextLabel")
+		textlabel.Size = UDim2.new(1, 0, 0, 36)
+		textlabel.Text = "Downloading "..path
+		textlabel.BackgroundTransparency = 1
+		textlabel.TextStrokeTransparency = 0
+		textlabel.TextSize = 30
+		textlabel.Font = Enum.Font.SourceSans
+		textlabel.TextColor3 = Color3.new(1, 1, 1)
+		textlabel.Position = UDim2.new(0, 0, 0, -36)
+		textlabel.Parent = game.CoreGui.RobloxGui
+		repeat task.wait() until isfile(path)
+		textlabel:Remove()
+	end)
+	local req = requestfunc({
+		Url = "https://raw.githubusercontent.com/7GrandDadPGN/personalscripts/main/RobloxBedwarsMinecraft/"..path,
+		Method = "GET"
+	})
+	writefile(path, req.Body)
+    end
     if cachedthings[path] == nil then
         cachedthings[path] = getasset(path)
     end
-	return cachedthings[path]
-end
+    return cachedthings[path]
+end 
 
 local function cachesize(image)
     local thing = Instance.new("ImageLabel")
@@ -64,7 +61,7 @@ local function cachesize(image)
     thing.Parent = game.CoreGui.RobloxGui
     spawn(function()
         cachedsizes[image] = 1
-        repeat wait() until thing.IsLoaded and thing.ContentImageSize ~= Vector2.new(0, 0)
+        repeat task.wait() until thing.IsLoaded and thing.ContentImageSize ~= Vector2.new(0, 0)
         local oldidentity = getthreadidentity()
         setthreadidentity(7)
         cachedsizes[image] = thing.ContentImageSize.X / 256
@@ -81,8 +78,8 @@ local function downloadassets(path2)
     local decodedjson = game:GetService("HttpService"):JSONDecode(json.Body)
     for i2,v2 in pairs(decodedjson) do
         if v2["type"] == "file" then
-			getcustomassetfunc(path2.."/"..v2["name"])
-		end
+	   getcustomassetfunc(path2.."/"..v2["name"])
+	end
     end
 end
 
@@ -112,54 +109,54 @@ cachesize("bedwars/ui/container/generic_54.png")
 
 local Flamework = require(game:GetService("ReplicatedStorage")["rbxts_include"]["node_modules"]["@flamework"].core.out).Flamework
 local newupdate = game.Players.LocalPlayer.PlayerScripts.TS:FindFirstChild("ui") and true or false
-repeat wait() until Flamework.isInitialized
+repeat task.wait() until Flamework.isInitialized
 local KnitClient = require(game:GetService("ReplicatedStorage")["rbxts_include"]["node_modules"].knit.src).KnitClient
 local soundslist = require(game:GetService("ReplicatedStorage").TS.sound["game-sound"]).GameSound
 local sounds = (newupdate and require(game:GetService("ReplicatedStorage")["rbxts_include"]["node_modules"]["@easy-games"]["game-core"].out).SoundManager or require(game:GetService("ReplicatedStorage").TS.sound["sound-manager"]).SoundManager)
-local footstepsounds = require(game.ReplicatedStorage.TS.sound["footstep-sounds"])
-local items = require(game.ReplicatedStorage.TS.item["item-meta"])
+local footstepsounds = require(game:GetService("ReplicatedStorage").TS.sound["footstep-sounds"])
+local items = require(game:GetService("ReplicatedStorage").TS.item["item-meta"])
 local itemtab = debug.getupvalue(items.getItemMeta, 1)
-local maps = debug.getupvalue(require(game.ReplicatedStorage.TS.game.map["map-meta"]).getMapMeta, 1)
-local defaultremotes = require(game.ReplicatedStorage.TS.remotes).default
-local battlepassutils = require(game.ReplicatedStorage.TS["battle-pass"]["battle-pass-utils"]).BattlePassUtils
-local inventoryutil = require(game.ReplicatedStorage.TS.inventory["inventory-util"]).InventoryUtil
+local maps = debug.getupvalue(require(game:GetService("ReplicatedStorage").TS.game.map["map-meta"]).getMapMeta, 1)
+local defaultremotes = require(game:GetService("ReplicatedStorage").TS.remotes).default
+local battlepassutils = require(game:GetService("ReplicatedStorage").TS["battle-pass"]["battle-pass-utils"]).BattlePassUtils
+local inventoryutil = require(game:GetService("ReplicatedStorage").TS.inventory["inventory-util"]).InventoryUtil
 local inventoryentity = require(game.ReplicatedStorage.TS.entity.entities["inventory-entity"]).InventoryEntity
 local notification = require(game:GetService("ReplicatedStorage")["rbxts_include"]["node_modules"]["@easy-games"]["game-core"].out.client.ui.notifications.components["notification-card"]).NotificationCard
-local hotbartile = require(game.Players.LocalPlayer.PlayerScripts.TS.controllers.global.hotbar.ui["hotbar-tile"]).HotbarTile
-local hotbaropeninventory = require(game.Players.LocalPlayer.PlayerScripts.TS.controllers.global.hotbar.ui["hotbar-open-inventory"]).HotbarOpenInventory
-local hotbarpartysection = require(game.Players.LocalPlayer.PlayerScripts.TS.controllers.global.hotbar.ui.party["hotbar-party-section"]).HotbarPartySection
-local hotbarspectatesection = require(game.Players.LocalPlayer.PlayerScripts.TS.controllers.global.hotbar.ui.spectate["hotbar-spectator-section"]).HotbarSpectatorSection
-local hotbarcustommatchsection = require(game.Players.LocalPlayer.PlayerScripts.TS.controllers.global.hotbar.ui["custom-match"]["hotbar-custom-match-section"]).HotbarCustomMatchSection
-local respawntimer = require(game.Players.LocalPlayer.PlayerScripts.TS.controllers.games.bedwars.respawn.ui["respawn-timer"])
-local hotbarhealthbar = require(game.Players.LocalPlayer.PlayerScripts.TS.controllers.global.hotbar.ui.healthbar["hotbar-healthbar"]).HotbarHealthbar
+local hotbartile = require(game:GetService("Players").LocalPlayer.PlayerScripts.TS.controllers.global.hotbar.ui["hotbar-tile"]).HotbarTile
+local hotbaropeninventory = require(game:GetService("Players").LocalPlayer.PlayerScripts.TS.controllers.global.hotbar.ui["hotbar-open-inventory"]).HotbarOpenInventory
+local hotbarpartysection = require(game:GetService("Players").LocalPlayer.PlayerScripts.TS.controllers.global.hotbar.ui.party["hotbar-party-section"]).HotbarPartySection
+local hotbarspectatesection = require(game:GetService("Players").LocalPlayer.PlayerScripts.TS.controllers.global.hotbar.ui.spectate["hotbar-spectator-section"]).HotbarSpectatorSection
+local hotbarcustommatchsection = require(game:GetService("Players").LocalPlayer.PlayerScripts.TS.controllers.global.hotbar.ui["custom-match"]["hotbar-custom-match-section"]).HotbarCustomMatchSection
+local respawntimer = require(game:GetService("Players").LocalPlayer.PlayerScripts.TS.controllers.games.bedwars.respawn.ui["respawn-timer"])
+local hotbarhealthbar = require(game:GetService("Players").LocalPlayer.PlayerScripts.TS.controllers.global.hotbar.ui.healthbar["hotbar-healthbar"]).HotbarHealthbar
 local appcontroller = {closeApp = function() end}
 if newupdate then
     appcontroller = require(game:GetService("ReplicatedStorage")["rbxts_include"]["node_modules"]["@easy-games"]["game-core"].out.client.controllers["app-controller"]).AppController
 end
 local getQueueMeta = function() end
 if newupdate then
-    local queuemeta = require(game.ReplicatedStorage.TS["game"]["queue-meta"]).QueueMeta
+    local queuemeta = require(game:GetService("ReplicatedStorage").TS["game"]["queue-meta"]).QueueMeta
     getQueueMeta = function(type)
         return queuemeta[type]
     end
 else
-    getQueueMeta = require(game.ReplicatedStorage.TS["game"]["queue-meta"]).getQueueMeta
+    getQueueMeta = require(game:GetService("ReplicatedStorage").TS["game"]["queue-meta"]).getQueueMeta
 end
 local hud2
-local hotbarapp = require(game.Players.LocalPlayer.PlayerScripts.TS.controllers.global.hotbar.ui["hotbar-app"]).HotbarApp
-local hotbarapp2 = require(game.Players.LocalPlayer.PlayerScripts.TS.controllers.global.hotbar.ui["hotbar-app"])
-local itemshopapp = require(game.Players.LocalPlayer.PlayerScripts.TS.controllers.games.bedwars.shop.ui["item-shop"]["bedwars-item-shop-app"])[(newupdate and "BedwarsItemShopAppBase" or "BedwarsItemShopApp")]
-local teamshopapp = require(game.Players.LocalPlayer.PlayerScripts.TS.controllers.games.bedwars["generator-upgrade"].ui["bedwars-team-upgrade-app"]).BedwarsTeamUpgradeApp
-local victorysection = require(game.Players.LocalPlayer.PlayerScripts.TS.controllers["game"].match.ui["victory-section"]).VictorySection
-local battlepasssection = require(game.Players.LocalPlayer.PlayerScripts.TS.controllers.games.bedwars["battle-pass-progression"].ui["battle-pass-progession-app"]).BattlePassProgressionApp
-local bedwarsshopitems = require(game.ReplicatedStorage.TS.games.bedwars.shop["bedwars-shop"]).BedwarsShop
-local bedwarsbows = require(game.ReplicatedStorage.TS.games.bedwars["bedwars-bows"]).BedwarsBows
+local hotbarapp = require(game:GetService("Players").LocalPlayer.PlayerScripts.TS.controllers.global.hotbar.ui["hotbar-app"]).HotbarApp
+local hotbarapp2 = require(game:GetService("Players").LocalPlayer.PlayerScripts.TS.controllers.global.hotbar.ui["hotbar-app"])
+local itemshopapp = require(game:GetService("Players").LocalPlayer.PlayerScripts.TS.controllers.games.bedwars.shop.ui["item-shop"]["bedwars-item-shop-app"])[(newupdate and "BedwarsItemShopAppBase" or "BedwarsItemShopApp")]
+local teamshopapp = require(game:GetService("Players").LocalPlayer.PlayerScripts.TS.controllers.games.bedwars["generator-upgrade"].ui["bedwars-team-upgrade-app"]).BedwarsTeamUpgradeApp
+local victorysection = require(game:GetService("Players").LocalPlayer.PlayerScripts.TS.controllers["game"].match.ui["victory-section"]).VictorySection
+local battlepasssection = require(game:GetService("Players").LocalPlayer.PlayerScripts.TS.controllers.games.bedwars["battle-pass-progression"].ui["battle-pass-progession-app"]).BattlePassProgressionApp
+local bedwarsshopitems = require(game:GetService("ReplicatedStorage").TS.games.bedwars.shop["bedwars-shop"]).BedwarsShop
+local bedwarsbows = require(game:GetService("ReplicatedStorage").TS.games.bedwars["bedwars-bows"]).BedwarsBows
 local roact = debug.getupvalue(hotbartile.render, 1)
-local clientstore = (newupdate and require(game.Players.LocalPlayer.PlayerScripts.TS.ui.store).ClientStore or require(game.Players.LocalPlayer.PlayerScripts.TS.rodux.rodux).ClientStore)
+local clientstore = (newupdate and require(game:GetService("Players").LocalPlayer.PlayerScripts.TS.ui.store).ClientStore or require(game.Players.LocalPlayer.PlayerScripts.TS.rodux.rodux).ClientStore)
 local client = require(game:GetService("ReplicatedStorage").TS.remotes).default.Client
 local colorutil = debug.getupvalue(hotbartile.render, 2)
 local soundmanager = require(game:GetService("ReplicatedStorage")["rbxts_include"]["node_modules"]["@easy-games"]["game-core"].out).SoundManager
-local itemviewport = require(game.Players.LocalPlayer.PlayerScripts.TS.controllers.global.inventory.ui["item-viewport"]).ItemViewport
+local itemviewport = require(game:GetService("Players").LocalPlayer.PlayerScripts.TS.controllers.global.inventory.ui["item-viewport"]).ItemViewport
 local empty = debug.getupvalue(hotbartile.render, 6)
 local tween = debug.getupvalue(hotbartile.tweenPosition, 1)
 --local hotbarimage = getcustomassetfunc("bedwars/ui/widgets.png")
@@ -190,16 +187,17 @@ footstepsounds["FootstepSounds"][4] = {
     ["run"] = {getcustomassetfunc("bedwars/sounds/footstep/4-3.mp3"), getcustomassetfunc("bedwars/sounds/footstep/4-4.mp3")}
 }
 for i,v in pairs(itemtab) do
-    if tostring(i):match("wool") then
+    if tostring(i) == "wool" then
         v.footstepSound = footstepsounds["BlockFootstepSound"]["WOOL"]
     end
 end
-for i2,v2 in pairs(soundslist) do 
+
+for i2,v2 in pairs(soundslist) do
     --print(i2,v2)
 end
 for i,v in pairs(listfiles("bedwars/sounds")) do
     local str = tostring(tostring(v):gsub('bedwars/sounds\\', ""):gsub(".mp3", ""))
-    if identifyexecutor():find("ScriptWare") then
+    if identifyexecutor():lower():find("scriptware") then
         str = tostring(tostring(v):gsub('bedwars\\sounds\\', ""):gsub(".mp3", ""))
     end 
     local item = soundslist[str]
