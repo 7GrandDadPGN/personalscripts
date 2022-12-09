@@ -110,7 +110,7 @@ cachesize("bedwars/ui/container/generic_54.png")
 local Flamework = require(game:GetService("ReplicatedStorage")["rbxts_include"]["node_modules"]["@flamework"].core.out).Flamework
 local newupdate = game.Players.LocalPlayer.PlayerScripts.TS:FindFirstChild("ui") and true or false
 repeat task.wait() until Flamework.isInitialized
-local KnitClient = require(game:GetService("ReplicatedStorage")["rbxts_include"]["node_modules"].knit.src).KnitClient
+local KnitClient = debug.getupvalue(require(game:GetService("Players").LocalPlayer.PlayerScripts.TS.knit).setup, 6)
 local soundslist = require(game:GetService("ReplicatedStorage").TS.sound["game-sound"]).GameSound
 local sounds = (newupdate and require(game:GetService("ReplicatedStorage")["rbxts_include"]["node_modules"]["@easy-games"]["game-core"].out).SoundManager or require(game:GetService("ReplicatedStorage").TS.sound["sound-manager"]).SoundManager)
 local footstepsounds = require(game:GetService("ReplicatedStorage").TS.sound["footstep-sounds"])
