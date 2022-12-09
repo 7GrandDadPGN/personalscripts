@@ -25,7 +25,7 @@ local function removeTags(str)
 end
 
 local function getcustomassetfunc(path)
-     if not isfile(path) then
+     if not betterisfile(path) then
 	task.spawn(function()
 		local textlabel = Instance.new("TextLabel")
 		textlabel.Size = UDim2.new(1, 0, 0, 36)
@@ -37,7 +37,7 @@ local function getcustomassetfunc(path)
 		textlabel.TextColor3 = Color3.new(1, 1, 1)
 		textlabel.Position = UDim2.new(0, 0, 0, -36)
 		textlabel.Parent = game:GetService("CoreGui").RobloxGui
-		repeat task.wait() until isfile(path)
+		repeat task.wait() until betterisfile(path)
 		textlabel:Remove()
 	end)
 	local req = requestfunc({
